@@ -76,7 +76,7 @@ module.exports = {
                         next(new Error('Unauthorized Realtime user (session)'));
                     } else {
                         socket.request.session = JSON.parse(session);
-                        next()
+                        next();
                     }
                 }
             );

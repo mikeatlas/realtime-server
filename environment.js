@@ -17,9 +17,14 @@ module.exports = {
                 console.log('Realtime User ID connected: ' + message.userId);
             });
 
-            redis.sub.on('message', function(channel, message) {
+            socket.on('disconnect',function(){
+                redis.sub.removeListener('message', onMessage); 
+            });
 
-                 // can't deliver a message to a socket with no handshake(session) established
+            redis.sub.on('message', onMessage);
+
+            function onMessage(channel, message){
+                // can't deliver a message to a socket with no handshake(session) established
                 if (socket.request === undefined) {
                     return;
                 }
@@ -38,8 +43,7 @@ module.exports = {
                     delete msg.recipient_user_ids; //don't include this with the message
                     socket.emit('realtime_msg', msg);
                 }
-
-            });
+            };
 
         });
 
